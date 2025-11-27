@@ -4,6 +4,7 @@ import IntroPanel from './components/IntroPanel';
 import MainPanel from './components/MainPanel';
 import ConclusionPanel from './components/ConclusionPanel';
 import PostsPanel from './components/PostsPanel';
+import ApiPanel from './components/ApiPanel';
 
 import './App.css';
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/description" element={<MainPanel />} />
           <Route path="/conclusion" element={<ConclusionPanel />} />
           <Route path="/posts" element={<PostsPanel />} />
+          <Route path="/api" element={<ApiPanel />} />
         </Routes>
       </main>
     </div>

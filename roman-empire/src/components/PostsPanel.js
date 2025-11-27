@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import ImageInverter from './ImageInverter';
 import axios from 'axios';
 
-const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
+const POSTS_URL = 'http://127.0.0.1:8000/posts';
 
 const PostsPanel = () => {
   const [posts, setPosts] = useState([]);
@@ -66,6 +67,8 @@ const PostsPanel = () => {
           </article>
         ))}
       </section>
+
+      <ImageInverter />
     </article>
   );
 };
