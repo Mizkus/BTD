@@ -6,6 +6,7 @@ const navItems = [
   { to: '/conclusion', label: 'Заключение' },
   { to: '/posts', label: 'Посты' },
   { to: '/api', label: 'API' },
+  { to: '/stats', label: 'Статистика' },
 ];
 
 const Sidebar = () => (
