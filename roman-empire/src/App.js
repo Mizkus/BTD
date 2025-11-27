@@ -3,6 +3,8 @@ import Sidebar from './components/Sidebar';
 import IntroPanel from './components/IntroPanel';
 import MainPanel from './components/MainPanel';
 import ConclusionPanel from './components/ConclusionPanel';
+import PostsPanel from './components/PostsPanel';
+
 import './App.css';
 
 function App() {
@@ -15,6 +17,7 @@ function App() {
           <Route path="/intro" element={<IntroPanel />} />
           <Route path="/description" element={<MainPanel />} />
           <Route path="/conclusion" element={<ConclusionPanel />} />
+          <Route path="/posts" element={<PostsPanel />} />
         </Routes>
       </main>
     </div>
