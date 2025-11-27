@@ -1,16 +1,23 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import ImageInverter from './ImageInverter';
 import axios from 'axios';
+import AuthContext from '../context/AuthContext';
 
 const POSTS_URL = 'http://127.0.0.1:8000/posts';
 
 const PostsPanel = () => {
+  const { auth } = useContext(AuthContext);
   const [posts, setPosts] = useState([]);
   const [axiosPosts, setAxiosPosts] = useState([]);
   const [limit, setLimit] = useState(5);
 
   useEffect(() => {
-    fetch(POSTS_URL)
+    if (!auth.token) return;
+    fetch(POSTS_URL, {
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
+      },
+    })
       .then((res) => res.json())
       .then(setPosts)
       .catch((error) => console.error('Fetch error:', error));
@@ -19,7 +26,7 @@ const PostsPanel = () => {
       .get(POSTS_URL)
       .then((res) => setAxiosPosts(res.data))
       .catch((error) => console.error('Axios error:', error));
-  }, []);
+  }, [auth.token]);
 
   const visibleFetchPosts = useMemo(
     () => posts.slice(0, limit),
