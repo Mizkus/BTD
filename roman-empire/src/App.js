@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-import MainPanel from './components/MainPanel';
 import IntroPanel from './components/IntroPanel';
+import MainPanel from './components/MainPanel';
 import ConclusionPanel from './components/ConclusionPanel';
 import './App.css';
 
