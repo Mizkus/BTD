@@ -3,15 +3,18 @@ const endpoints = [
   { method: 'GET', path: '/api/spaces', summary: 'Список пространств' },
   { method: 'POST', path: '/api/spaces', summary: 'Создать пространство' },
   { method: 'POST', path: '/api/texts', summary: 'Добавить текст и получить эмбеддинг (float16)' },
-  { method: 'POST', path: '/api/upload-txt?space=demo', summary: 'Загрузить .txt, каждая строка — отдельная точка' },
-  { method: 'GET', path: '/api/articles', summary: 'Ссылки на Qwen3 и др.' },
+  { method: 'GET', path: '/api/articles', summary: 'Ссылки на Embedder и смежные материалы' },
   { method: 'GET', path: '/api/search?q=term&space=demo', summary: 'Поиск по текстам в пространстве' },
 ];
 
 export default function ApiDocs() {
   return (
     <section className="panel" id="api">
-      <h2>API (простое)</h2>
+      <h2>Техническая документация (API)</h2>
+      <p className="muted small">
+        Минимальный REST-слой: JSON схемы совпадают с блоками выше, поэтому любой раздел можно открыть изолированно и
+        сразу повторить шаги.
+      </p>
       <table className="table">
         <thead>
           <tr>

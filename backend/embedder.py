@@ -35,7 +35,8 @@ def embed_text(text: str, instruction: str = ""):
 
     model = load_model()
     if model:
-        emb = model.encode(full_text, convert_to_numpy=True, normalize_embeddings=False, dtype="float16")
+        emb = model.encode(full_text, convert_to_numpy=True, normalize_embeddings=False)
+        emb = np.array(emb, dtype="float16")
     else:
         rng = np.random.default_rng(seed=42 + len(clean_text))
         emb = rng.normal(size=16).astype("float16")

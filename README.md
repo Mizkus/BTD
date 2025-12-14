@@ -1,6 +1,6 @@
-# Qwen3 Embedding Lab (React + FastAPI + SQLite)
+# Embedder Embedding Lab (React + FastAPI + SQLite)
 
-Простой пример: фронтенд на React, бэкенд на FastAPI (Python), хранилище в MySQL и вызов эмбеддера через `sentence-transformers` (Qwen3-Embedding-0.6B, с запасным MiniLM).
+Простой пример: фронтенд на React, бэкенд на FastAPI (Python), хранилище в MySQL и вызов эмбеддера через `sentence-transformers` (Embedder-Embedding-0.6B, с запасным MiniLM).
 
 ## Запуск (кратко)
 1) Обновите Node до 18+ (напр. `nvm install 20 && nvm use 20`).  
@@ -26,12 +26,12 @@ npm run dev   # http://localhost:5173
 - `/api/points?space=demo` — точки текущего пространства.  
 - `/api/texts` — добавляет текст и сразу получает эмбеддинг + (x,y) проекцию.  
 - `/api/upload-txt` — загрузка .txt, каждая строка становится точкой.  
-- `/api/articles` — ссылки на Qwen3 и связанные материалы.  
+- `/api/articles` — ссылки на Embedder и связанные материалы.  
 - `/api/search` — поиск по текстам в выбранном пространстве.
 
 ## О договорённостях
 - Файлы фронтенда в `.js`, логика максимально простая.  
 - Бэкенд только на Python (FastAPI + SQLAlchemy + Alembic).  
 - Визуализация — обычный SVG scatter с hover-подсказкой (короткое имя текста).  
-- Если Qwen3-Embedding-0.6B недоступна, embedder.py fallback использует MiniLM, чтобы пример запускался оффлайн.  
+- Если Embedder-Embedding-0.6B недоступна, embedder.py fallback использует MiniLM, чтобы пример запускался оффлайн.  
 - Структура БД создаётся через Alembic миграции (директория `backend/alembic`).

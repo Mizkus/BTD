@@ -13,9 +13,12 @@ export default function Articles() {
   return (
     <section className="panel" id="articles">
       <h2>Научные статьи и ссылки</h2>
-      <div className="list vertical">
+      <p className="muted small">
+        Подборка материалов для углубления: от официальной модели Embedder до методик по редукции размерности.
+      </p>
+      <div className="article-grid">
         {items.map((article) => (
-          <a key={article.id} className="card" href={article.link} target="_blank" rel="noreferrer">
+          <a key={article.id} className="card article-card" href={article.link} target="_blank" rel="noreferrer">
             <strong>{article.title}</strong>
             <span className="muted">{article.summary}</span>
           </a>

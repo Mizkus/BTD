@@ -15,7 +15,7 @@ class SpaceOut(BaseModel):
 
 
 class TextBase(BaseModel):
-  shortName: Optional[str] = "текст"
+  shortName: Optional[str] = None
   content: str
   space: Optional[str] = "default"
 

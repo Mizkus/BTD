@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
@@ -7,7 +7,7 @@ from database import get_db, SessionLocal
 from models import TextEmbedding, Space
 from schemas import TextCreate, TextOut, Article, SpaceCreate, SpaceOut
 
-app = FastAPI(title="Qwen3 Embedding Lab API", version="0.1.0")
+app = FastAPI(title="Embedder Lab API", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,6 +32,13 @@ def ensure_demo_space(db: Session):
     return demo
 
 
+def _short_name(text: str, words: int = 3):
+    tokens = (text or "").split()
+    if not tokens:
+        return "текст"
+    return " ".join(tokens[:words])
+
+
 def seed_points(db: Session):
     ensure_demo_space(db)
     existing = db.query(TextEmbedding).count()
@@ -52,7 +59,7 @@ def seed_points(db: Session):
     for idx, text in enumerate(seed_texts):
         embed_result = embed_text(text)
         row = TextEmbedding(
-            short_name=" ".join(text.split()[:3]),
+            short_name=_short_name(text),
             content=text,
             space="demo",
             x=embed_result["x"],
@@ -74,12 +81,13 @@ def startup():
 
 @app.get("/api/points", response_model=List[TextOut])
 def get_points(space: str = "demo", db: Session = Depends(get_db)):
-    return (
+    rows = (
         db.query(TextEmbedding)
         .filter(TextEmbedding.space == space)
         .order_by(TextEmbedding.id.desc())
         .all()
     )
+    return [_to_schema(row) for row in rows]
 
 
 @app.post("/api/texts", response_model=TextOut)
@@ -87,9 +95,10 @@ def post_text(payload: TextCreate, db: Session = Depends(get_db)):
     if not payload.content:
         raise HTTPException(status_code=400, detail="content required")
     embed_result = embed_text(payload.content)
+    short_name = payload.shortName.strip() if payload.shortName else _short_name(payload.content)
     text_row = TextEmbedding(
         space=payload.space or "demo",
-        short_name=payload.shortName or "текст",
+        short_name=short_name or "текст",
         content=payload.content,
         x=embed_result["x"],
         y=embed_result["y"],
@@ -98,65 +107,34 @@ def post_text(payload: TextCreate, db: Session = Depends(get_db)):
     db.add(text_row)
     db.commit()
     db.refresh(text_row)
+    return _to_schema(text_row)
+
+
+def _to_schema(row: TextEmbedding) -> TextOut:
     return TextOut(
-        id=text_row.id,
-        space=text_row.space,
-        shortName=text_row.short_name,
-        content=text_row.content,
-        x=text_row.x,
-        y=text_row.y,
+        id=row.id,
+        space=row.space,
+        shortName=row.short_name,
+        content=row.content,
+        x=row.x,
+        y=row.y,
     )
-
-
-@app.post("/api/upload-txt", response_model=List[TextOut])
-async def upload_txt(space: str = "demo", file: UploadFile = File(...), db: Session = Depends(get_db)):
-    content = await file.read()
-    try:
-        text = content.decode("utf-8")
-    except Exception:
-        raise HTTPException(status_code=400, detail="cannot decode file")
-    lines = [line.strip() for line in text.splitlines() if line.strip()]
-    created = []
-    for line in lines:
-        embed_result = embed_text(line)
-        row = TextEmbedding(
-            space=space,
-            short_name=" ".join(line.split()[:3]),
-            content=line,
-            x=embed_result["x"],
-            y=embed_result["y"],
-            embedding_json=None,
-        )
-        db.add(row)
-        db.flush()
-        created.append(
-            TextOut(
-                id=row.id,
-                space=row.space,
-                shortName=row.short_name,
-                content=row.content,
-                x=row.x,
-                y=row.y,
-            )
-        )
-    db.commit()
-    return created
 
 
 @app.get("/api/articles", response_model=List[Article])
 def get_articles():
     return [
         Article(
-            id="qwen3",
+            id="embedder",
             title="Qwen3-Embedding-0.6B",
             summary="Официальная страница модели на HuggingFace.",
             link="https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
         ),
         Article(
-            id="qwen3-paper",
-            title="Qwen2.5-Embench: Embedding Evaluation and Training",
-            summary="Исследование эмбеддингов Qwen, методики обучения и оценки (arXiv:2506.05176).",
-            link="https://arxiv.org/abs/2506.05176",
+            id="embedder-report",
+            title="Qwen Technical Report",
+            summary="Официальный отчёт команды Qwen о архитектуре и возможностях семейства моделей (arXiv:2311.00655).",
+            link="https://arxiv.org/abs/2311.00655",
         ),
         Article(
             id="st",
@@ -165,10 +143,10 @@ def get_articles():
             link="https://www.sbert.net/",
         ),
         Article(
-            id="pca",
-            title="PCA для прожекции",
-            summary="Классический способ свернуть эмбеддинги в 2D.",
-            link="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html",
+            id="plotly",
+            title="Plotly Python",
+            summary="Документация Plotly Python по созданию интерактивных scatter-графиков.",
+            link="https://plotly.com/python/",
         ),
     ]
 
@@ -210,7 +188,7 @@ def search(q: str = "", space: str = "demo", db: Session = Depends(get_db)):
 
 @app.get("/")
 def root():
-    return {"message": "Qwen3 embedding backend (FastAPI + SQLAlchemy + sentence-transformers, texts only)"}
+    return {"message": "Embedder embedding backend (FastAPI + SQLAlchemy + sentence-transformers, texts only)"}
 
 
 @app.get("/api/spaces", response_model=List[SpaceOut])

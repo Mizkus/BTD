@@ -1,7 +1,7 @@
 {
-  "name": "qwen-embedding-frontend",
-  "version": "0.1.0",
+  "name": "embedder-lab",
   "private": true,
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +11,7 @@
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^6.30.2"
+    "react-router-dom": "^7.10.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
