@@ -1,25 +1,7 @@
 import { useEffect, useRef } from 'react';
+import Plotly from 'plotly.js-dist-min';
 
 const colors = ['#6ba4ff', '#7cf2d4', '#f6c177', '#e05a9d'];
-const PLOTLY_SRC = 'https://cdn.plot.ly/plotly-2.35.2.min.js';
-
-function ensurePlotly() {
-  if (window.Plotly) {
-    return Promise.resolve(window.Plotly);
-  }
-  if (window.__plotlyLoader) {
-    return window.__plotlyLoader;
-  }
-  window.__plotlyLoader = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = PLOTLY_SRC;
-    script.async = true;
-    script.onload = () => resolve(window.Plotly);
-    script.onerror = () => reject(new Error('Plotly failed to load'));
-    document.body.appendChild(script);
-  });
-  return window.__plotlyLoader;
-}
 
 export default function Scatter({ points }) {
   const plotRef = useRef(null);
@@ -38,9 +20,8 @@ export default function Scatter({ points }) {
   useEffect(() => {
     let isMounted = true;
 
-    const renderPlot = async () => {
+    const renderPlot = () => {
       try {
-        await ensurePlotly();
         if (!isMounted || !plotRef.current) return;
 
         const plotPoints = Array.isArray(points) ? points : [];
@@ -73,7 +54,7 @@ export default function Scatter({ points }) {
           showlegend: false,
         };
 
-        window.Plotly.react(plotRef.current, data, layout, {
+        Plotly.react(plotRef.current, data, layout, {
           responsive: true,
           displaylogo: false,
           modeBarButtonsToRemove: ['select2d', 'lasso2d'],
@@ -87,8 +68,8 @@ export default function Scatter({ points }) {
 
     return () => {
       isMounted = false;
-      if (window.Plotly && plotRef.current) {
-        window.Plotly.purge(plotRef.current);
+      if (plotRef.current) {
+        Plotly.purge(plotRef.current);
       }
     };
   }, [points]);

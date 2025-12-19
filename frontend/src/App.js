@@ -123,8 +123,6 @@ export default function App() {
                 <TextForm onAdd={handleAddText} />
                 <ol className="steps">
                   <li>Введите текст (на любом языке).</li>
-                  <li>Отправьте — backend вызовет embedder.py и сохранит точку.</li>
-                  <li>Ниже появится обновлённая визуализация.</li>
                 </ol>
               </div>
               <div className="panel-block">
